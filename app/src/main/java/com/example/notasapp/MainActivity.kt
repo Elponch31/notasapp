@@ -21,6 +21,7 @@ class MainActivity : ComponentActivity() {
                         navController = navController,
                         startDestination = "notesScreen"
                     ) {
+
                         composable("notesScreen") { NotesScreen(navController) }
                         composable("newNoteScreen") { NewNoteScreen(navController) }
                     }
