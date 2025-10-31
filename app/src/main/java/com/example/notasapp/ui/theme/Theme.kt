@@ -4,6 +4,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.material3.MaterialTheme
 
 
 private val LightColors = lightColorScheme(
@@ -23,6 +24,11 @@ private val DarkColors = darkColorScheme(
     onSurface = Color(0xFFE0E0E0)
 )
 
+
+@Composable
+fun NotasAppTheme(content: @Composable () -> Unit) {
+    MaterialTheme(content = content)
+}
 @Composable
 fun NotasAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
