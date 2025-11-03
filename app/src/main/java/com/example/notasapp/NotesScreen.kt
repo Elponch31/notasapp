@@ -25,7 +25,7 @@ fun NotesScreen(navController: NavController, noteVm: NoteViewModel, taskVm: Tas
     val notes by noteVm.notes.collectAsState()
     val tasks by taskVm.tasks.collectAsState()
 
-    var selectedTab by remember { mutableStateOf(0) } // 0 = Notas, 1 = Tareas
+    var selectedTab by remember { mutableStateOf(0) }
 
     Scaffold(
         topBar = {
@@ -70,7 +70,7 @@ fun NotesScreen(navController: NavController, noteVm: NoteViewModel, taskVm: Tas
                 .padding(padding)
                 .padding(16.dp)
         ) {
-            // Tabs
+
             val tabs = listOf("Notas", "Tareas")
             TabRow(selectedTabIndex = selectedTab) {
                 tabs.forEachIndexed { index, title ->
@@ -83,7 +83,7 @@ fun NotesScreen(navController: NavController, noteVm: NoteViewModel, taskVm: Tas
             Spacer(modifier = Modifier.height(12.dp))
 
             if (selectedTab == 0) {
-                // Mostrar notas (igual que antes)
+
                 LazyColumn {
                     items(notes.size) { i ->
                         val note = notes[i]
@@ -104,7 +104,7 @@ fun NotesScreen(navController: NavController, noteVm: NoteViewModel, taskVm: Tas
                     }
                 }
             } else {
-                // Mostrar tareas con checkbox para marcar completada (al marcarla, se borra)
+
                 LazyColumn {
                     items(tasks.size) { i ->
                         val task = tasks[i]
@@ -131,11 +131,11 @@ fun NotesScreen(navController: NavController, noteVm: NoteViewModel, taskVm: Tas
                                     Text(task.content, style = MaterialTheme.typography.bodyMedium, maxLines = 2, overflow = TextOverflow.Ellipsis)
                                 }
 
-                                // Checkbox: al marcar, se elimina la tarea
+
                                 Checkbox(
                                     checked = false,
                                     onCheckedChange = {
-                                        // marcar como completada -> borrar
+
                                         taskVm.deleteTask(task)
                                     }
                                 )
