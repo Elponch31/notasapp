@@ -13,18 +13,26 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.compose.material3.Checkbox
+import androidx.compose.foundation.layout.Row
+import androidx.compose.ui.text.style.TextOverflow
+import com.example.notasapp.ui.theme.NoteViewModel
+import com.example.notasapp.ui.theme.TaskViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NotesScreen(navController: NavController, vm: NoteViewModel) {
-    val notes by vm.notes.collectAsState()
+fun NotesScreen(navController: NavController, noteVm: NoteViewModel, taskVm: TaskViewModel) {
+    val notes by noteVm.notes.collectAsState()
+    val tasks by taskVm.tasks.collectAsState()
+
+    var selectedTab by remember { mutableStateOf(0) } // 0 = Notas, 1 = Tareas
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
                     Text(
-                        "Mis Notas",
+                        "Mis Notas y Tareas",
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,
                         color = Color.White
@@ -43,10 +51,16 @@ fun NotesScreen(navController: NavController, vm: NoteViewModel) {
                 contentAlignment = Alignment.BottomCenter
             ) {
                 FloatingActionButton(
-                    onClick = { navController.navigate("new_note/0") },
+                    onClick = {
+                        if (selectedTab == 0) {
+                            navController.navigate("new_note/0")
+                        } else {
+                            navController.navigate("new_task/0")
+                        }
+                    },
                     containerColor = Color(0xFF4CAF50)
                 ) {
-                    Icon(Icons.Default.Add, contentDescription = "Agregar nota", tint = Color.White)
+                    Icon(Icons.Default.Add, contentDescription = "Agregar", tint = Color.White)
                 }
             }
         }
@@ -56,21 +70,76 @@ fun NotesScreen(navController: NavController, vm: NoteViewModel) {
                 .padding(padding)
                 .padding(16.dp)
         ) {
-            LazyColumn {
-                items(notes.size) { i ->
-                    val note = notes[i]
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 6.dp)
-                            .clickable { navController.navigate("new_note/${note.id}") },
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                        elevation = CardDefaults.cardElevation(4.dp)
-                    ) {
-                        Column(modifier = Modifier.padding(16.dp)) {
-                            Text(note.title, style = MaterialTheme.typography.titleMedium)
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text(note.content, style = MaterialTheme.typography.bodyMedium)
+            // Tabs
+            val tabs = listOf("Notas", "Tareas")
+            TabRow(selectedTabIndex = selectedTab) {
+                tabs.forEachIndexed { index, title ->
+                    Tab(selected = selectedTab == index,
+                        onClick = { selectedTab = index },
+                        text = { Text(title) })
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            if (selectedTab == 0) {
+                // Mostrar notas (igual que antes)
+                LazyColumn {
+                    items(notes.size) { i ->
+                        val note = notes[i]
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 6.dp)
+                                .clickable { navController.navigate("new_note/${note.id}") },
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                            elevation = CardDefaults.cardElevation(4.dp)
+                        ) {
+                            Column(modifier = Modifier.padding(16.dp)) {
+                                Text(note.title, style = MaterialTheme.typography.titleMedium)
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(note.content, style = MaterialTheme.typography.bodyMedium, maxLines = 3, overflow = TextOverflow.Ellipsis)
+                            }
+                        }
+                    }
+                }
+            } else {
+                // Mostrar tareas con checkbox para marcar completada (al marcarla, se borra)
+                LazyColumn {
+                    items(tasks.size) { i ->
+                        val task = tasks[i]
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 6.dp),
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                            elevation = CardDefaults.cardElevation(4.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .clickable { navController.navigate("new_task/${task.id}") }
+                                ) {
+                                    Text(task.title, style = MaterialTheme.typography.titleMedium)
+                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Text(task.content, style = MaterialTheme.typography.bodyMedium, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                                }
+
+                                // Checkbox: al marcar, se elimina la tarea
+                                Checkbox(
+                                    checked = false,
+                                    onCheckedChange = {
+                                        // marcar como completada -> borrar
+                                        taskVm.deleteTask(task)
+                                    }
+                                )
+                            }
                         }
                     }
                 }

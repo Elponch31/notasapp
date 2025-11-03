@@ -11,21 +11,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.notasapp.ui.theme.NoteViewModel
+import com.example.notasapp.ui.theme.TaskViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewNoteScreen(navController: NavController, vm: NoteViewModel, noteId: Int) {
-    val scope = rememberCoroutineScope()
+fun NewTaskScreen(navController: NavController, vm: TaskViewModel, taskId: Int) {
     var title by remember { mutableStateOf("") }
     var content by remember { mutableStateOf("") }
-    var currentNote by remember { mutableStateOf<Note?>(null) }
+    var currentTask by remember { mutableStateOf<Task?>(null) }
 
-    LaunchedEffect(noteId) {
-        if (noteId != 0) {
-            val note = vm.getNoteById(noteId)
-            note?.let {
-                currentNote = it
+    LaunchedEffect(taskId) {
+        if (taskId != 0) {
+            val task = vm.getTaskById(taskId)
+            task?.let {
+                currentTask = it
                 title = it.title
                 content = it.content
             }
@@ -37,7 +36,7 @@ fun NewNoteScreen(navController: NavController, vm: NoteViewModel, noteId: Int) 
             TopAppBar(
                 title = {
                     Text(
-                        if (noteId == 0) "Nueva Nota" else "Editar Nota",
+                        if (taskId == 0) "Nueva Tarea" else "Editar Tarea",
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,
                         color = Color.White
@@ -64,15 +63,15 @@ fun NewNoteScreen(navController: NavController, vm: NoteViewModel, noteId: Int) 
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if (noteId != 0) {
+                if (taskId != 0) {
                     Button(
                         onClick = {
-                            currentNote?.let {
-                                vm.deleteNote(it)
+                            currentTask?.let {
+                                vm.deleteTask(it)
                                 navController.popBackStack()
                             }
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE53935)), // rojo
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE53935)),
                         modifier = Modifier.fillMaxWidth(0.9f)
                     ) {
                         Text("Eliminar", color = Color.White)
@@ -83,14 +82,14 @@ fun NewNoteScreen(navController: NavController, vm: NoteViewModel, noteId: Int) 
 
                 Button(
                     onClick = {
-                        if (noteId == 0) {
-                            vm.addNote(title, content)
+                        if (taskId == 0) {
+                            vm.addTask(title, content)
                         } else {
-                            vm.updateNote(noteId, title, content)
+                            vm.updateTask(taskId, title, content)
                         }
                         navController.popBackStack()
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)), // verde
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
                     modifier = Modifier.fillMaxWidth(0.9f)
                 ) {
                     Text("Guardar", color = Color.White)
