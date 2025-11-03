@@ -22,7 +22,7 @@ abstract class NoteDatabase : RoomDatabase() {
                     NoteDatabase::class.java,
                     "note_database"
                 )
-                    .fallbackToDestructiveMigration() // para desarrollo; quita o gestiona migraciones en producción
+                    .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
                 instance

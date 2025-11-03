@@ -72,7 +72,7 @@ fun NewNoteScreen(navController: NavController, vm: NoteViewModel, noteId: Int) 
                                 navController.popBackStack()
                             }
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE53935)), // rojo
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE53935)),
                         modifier = Modifier.fillMaxWidth(0.9f)
                     ) {
                         Text("Eliminar", color = Color.White)
@@ -90,7 +90,7 @@ fun NewNoteScreen(navController: NavController, vm: NoteViewModel, noteId: Int) 
                         }
                         navController.popBackStack()
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)), // verde
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
                     modifier = Modifier.fillMaxWidth(0.9f)
                 ) {
                     Text("Guardar", color = Color.White)
