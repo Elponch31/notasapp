@@ -20,7 +20,7 @@ class NoteViewModel(private val repository: NoteRepository) : ViewModel() {
 
     fun loadNotes() {
         viewModelScope.launch {
-            _notes.value = repository.getAll() // usa método genérico del BaseRepository
+            _notes.value = repository.getAll()
         }
     }
 
@@ -50,9 +50,6 @@ class NoteViewModel(private val repository: NoteRepository) : ViewModel() {
     }
 }
 
-/**
- * Factory para crear instancias del ViewModel con un repositorio inyectado.
- */
 class NoteViewModelFactory(private val repository: NoteRepository) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

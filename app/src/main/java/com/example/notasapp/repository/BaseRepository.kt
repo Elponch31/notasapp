@@ -1,30 +1,18 @@
 package com.example.notasapp
 
 /**
- * Clase base genérica para repositorios.
- * No es abstracta, por lo que puede heredarse sin obligación de implementar los métodos.
- * Sirve como punto común para lógica compartida o utilidades.
+ * Clase abstracta base para los repositorios del sistema.
+ * Define la estructura de los métodos CRUD que deberán implementar las clases hijas.
  */
-open class BaseRepository<T> {
+abstract class BaseRepository<T> {
 
-    open suspend fun getAll(): List<T> {
-        // Implementación vacía o genérica
-        return emptyList()
-    }
+    abstract suspend fun getAll(): List<T>
 
-    open suspend fun getById(id: Int): T? {
-        return null
-    }
+    abstract suspend fun getById(id: Int): T?
 
-    open suspend fun insert(item: T) {
-        // Implementación vacía
-    }
+    abstract suspend fun insert(item: T)
 
-    open suspend fun update(item: T) {
-        // Implementación vacía
-    }
+    abstract suspend fun update(item: T)
 
-    open suspend fun delete(item: T) {
-        // Implementación vacía
-    }
+    abstract suspend fun delete(item: T)
 }
