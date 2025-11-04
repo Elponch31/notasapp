@@ -20,7 +20,7 @@ class TaskViewModel(private val repository: TaskRepository) : ViewModel() {
 
     fun loadTasks() {
         viewModelScope.launch {
-            _tasks.value = repository.getAllTasks()
+            _tasks.value = repository.getAll() // ✅ usa método genérico del BaseRepository
         }
     }
 
@@ -33,7 +33,7 @@ class TaskViewModel(private val repository: TaskRepository) : ViewModel() {
 
     fun updateTask(id: Int, title: String, content: String) {
         viewModelScope.launch {
-            repository.update(Task(id, title, content))
+            repository.update(Task(id = id, title = title, content = content))
             loadTasks()
         }
     }
@@ -46,9 +46,10 @@ class TaskViewModel(private val repository: TaskRepository) : ViewModel() {
     }
 
     suspend fun getTaskById(id: Int): Task? {
-        return repository.getTaskById(id)
+        return repository.getById(id) // ✅ también usa el método genérico
     }
 }
+
 
 class TaskViewModelFactory(private val repository: TaskRepository) :
     ViewModelProvider.Factory {

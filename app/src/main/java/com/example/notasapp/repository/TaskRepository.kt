@@ -1,14 +1,14 @@
 package com.example.notasapp
 
-class TaskRepository(private val dao: TaskDao) {
+class TaskRepository(private val dao: TaskDao) : BaseRepository<Task>() {
 
-    suspend fun getAllTasks() = dao.getAllTasks()
+    override suspend fun getAll(): List<Task> = dao.getAllTasks()
 
-    suspend fun getTaskById(id: Int) = dao.getTaskById(id)
+    override suspend fun getById(id: Int): Task? = dao.getTaskById(id)
 
-    suspend fun insert(task: Task) = dao.insert(task)
+    override suspend fun insert(item: Task) = dao.insert(item)
 
-    suspend fun update(task: Task) = dao.update(task)
+    override suspend fun update(item: Task) = dao.update(item)
 
-    suspend fun delete(task: Task) = dao.delete(task)
+    override suspend fun delete(item: Task) = dao.delete(item)
 }

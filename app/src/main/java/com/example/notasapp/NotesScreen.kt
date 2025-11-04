@@ -10,12 +10,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.compose.material3.Checkbox
-import androidx.compose.foundation.layout.Row
-import androidx.compose.ui.text.style.TextOverflow
 import com.example.notasapp.ui.theme.NoteViewModel
 import com.example.notasapp.ui.theme.TaskViewModel
 
@@ -24,7 +24,6 @@ import com.example.notasapp.ui.theme.TaskViewModel
 fun NotesScreen(navController: NavController, noteVm: NoteViewModel, taskVm: TaskViewModel) {
     val notes by noteVm.notes.collectAsState()
     val tasks by taskVm.tasks.collectAsState()
-
     var selectedTab by remember { mutableStateOf(0) }
 
     Scaffold(
@@ -32,58 +31,38 @@ fun NotesScreen(navController: NavController, noteVm: NoteViewModel, taskVm: Tas
             TopAppBar(
                 title = {
                     Text(
-                        "Mis Notas y Tareas",
+                        stringResource(R.string.notes_and_tasks),
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,
                         color = Color.White
                     )
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF4CAF50)
-                )
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFF4CAF50))
             )
         },
         floatingActionButton = {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                contentAlignment = Alignment.BottomCenter
+            FloatingActionButton(
+                onClick = {
+                    if (selectedTab == 0) navController.navigate("new_note/0")
+                    else navController.navigate("new_task/0")
+                },
+                containerColor = Color(0xFF4CAF50)
             ) {
-                FloatingActionButton(
-                    onClick = {
-                        if (selectedTab == 0) {
-                            navController.navigate("new_note/0")
-                        } else {
-                            navController.navigate("new_task/0")
-                        }
-                    },
-                    containerColor = Color(0xFF4CAF50)
-                ) {
-                    Icon(Icons.Default.Add, contentDescription = "Agregar", tint = Color.White)
-                }
+                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.add), tint = Color.White)
             }
         }
     ) { padding ->
-        Column(
-            modifier = Modifier
-                .padding(padding)
-                .padding(16.dp)
-        ) {
-
-            val tabs = listOf("Notas", "Tareas")
+        Column(modifier = Modifier.padding(padding).padding(16.dp)) {
+            val tabs = listOf(stringResource(R.string.notes), stringResource(R.string.tasks))
             TabRow(selectedTabIndex = selectedTab) {
                 tabs.forEachIndexed { index, title ->
-                    Tab(selected = selectedTab == index,
-                        onClick = { selectedTab = index },
-                        text = { Text(title) })
+                    Tab(selected = selectedTab == index, onClick = { selectedTab = index }, text = { Text(title) })
                 }
             }
 
             Spacer(modifier = Modifier.height(12.dp))
 
             if (selectedTab == 0) {
-
                 LazyColumn {
                     items(notes.size) { i ->
                         val note = notes[i]
@@ -104,21 +83,16 @@ fun NotesScreen(navController: NavController, noteVm: NoteViewModel, taskVm: Tas
                     }
                 }
             } else {
-
                 LazyColumn {
                     items(tasks.size) { i ->
                         val task = tasks[i]
                         Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 6.dp),
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                             elevation = CardDefaults.cardElevation(4.dp)
                         ) {
                             Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
+                                modifier = Modifier.fillMaxWidth().padding(16.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Column(
@@ -130,14 +104,9 @@ fun NotesScreen(navController: NavController, noteVm: NoteViewModel, taskVm: Tas
                                     Spacer(modifier = Modifier.height(4.dp))
                                     Text(task.content, style = MaterialTheme.typography.bodyMedium, maxLines = 2, overflow = TextOverflow.Ellipsis)
                                 }
-
-
                                 Checkbox(
                                     checked = false,
-                                    onCheckedChange = {
-
-                                        taskVm.deleteTask(task)
-                                    }
+                                    onCheckedChange = { taskVm.deleteTask(task) }
                                 )
                             }
                         }

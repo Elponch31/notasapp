@@ -1,14 +1,14 @@
 package com.example.notasapp
 
-class NoteRepository(private val dao: NoteDao) {
+class NoteRepository(private val dao: NoteDao) : BaseRepository<Note>() {
 
-    suspend fun getAllNotes() = dao.getAllNotes()
+    override suspend fun getAll(): List<Note> = dao.getAllNotes()
 
-    suspend fun getNoteById(id: Int) = dao.getNoteById(id)
+    override suspend fun getById(id: Int): Note? = dao.getNoteById(id)
 
-    suspend fun insert(note: Note) = dao.insert(note)
+    override suspend fun insert(item: Note) = dao.insert(item)
 
-    suspend fun update(note: Note) = dao.update(note)
+    override suspend fun update(item: Note) = dao.update(item)
 
-    suspend fun delete(note: Note) = dao.delete(note)
+    override suspend fun delete(item: Note) = dao.delete(item)
 }
